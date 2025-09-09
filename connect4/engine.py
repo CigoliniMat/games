@@ -6,37 +6,38 @@ class connect4:
     row = 6
     column = 7
     win_number = 4
-    player_dict = {None:'blank',#' '
-                   0:'player1',#X
+    player_dict = {0:'blank',#' '
+                   -1:'player1',#X
                    1:'player2/pc'#O
                    }
 
     def __init__(self):
-        self.current_player = choice([0,1])
+        self.current_player = choice([-1,1])
         self.move_number = 0
         self.board = {}
         for x in range(1,self.column+1):
             for y in range(1,self.row+1):
-                self.board[x,y] = None
+                self.board[x,y] = 0
         self.legit_move = list(range(1,self.column+1))
     
-    def clean_terminal(self):
+    def _clean_terminal(self):
         if os.name == 'nt':
             os.system('cls')
         else:
             os.system('clear')
     
+    def _switch_player(self):
+        if self.current_player == 1:
+            self.current_player = -1
+        else:
+            self.current_player = 1
+
     def show_table(self):
-        player_mark = {None:' ',#blank
-                        0:'X',#player1
+        player_mark = {0:' ',#blank
+                        -1:'X',#player1
                         1:'O'#player2/pc
                         }
-        self.clean_terminal()
-
-        if self.move_number == 0:
-            print(f'Welcome to connect{self.win_number},')
-            print(f'choose a column to fill the button row, the first that connect{self.win_number} pawn Win!')
-            print(f'\nthe {self.player_dict[self.current_player]} start!\n')
+        
         r_row = reversed(list(range(1,self.row+1)))
         for y in r_row:
             print(' '*3,end='')
@@ -44,7 +45,7 @@ class connect4:
                 print('| ',end='')
 
                 value = self.board[(x,y)]
-                if value == 0:
+                if value == 1:
                     print(Fore.RED+f'{player_mark[value]} ',end='')
                 else:
                     print(Fore.BLUE+f'{player_mark[value]} ',end='')
@@ -69,23 +70,21 @@ class connect4:
 
     def insert_pawn(self,column):
         for y in range(1,self.row+1):
-            if self.board[(column,y)] == None:
+            if self.board[(column,y)] == 0:
                 self.board[(column,y)] = self.current_player
                 if y == self.row:
                     self.legit_move.remove(column)
+                self._switch_player()
+                self.move_number += 1
                 return
-        return False
-    
+        
     def check_end(self):
-        # draw
-        if len(self.legit_move) == 0:
-            return True, None
         
         for y in range(1,self.row+1):
             for x in range(1,self.column+1): #for each block of the board
                 value = self.board[(x,y)]
                 
-                if value == None:
+                if value == 0:
                     continue
                 count = {'vertical':1,
                          'orrizontal':1,
@@ -131,46 +130,16 @@ class connect4:
                         return True, value
                     count[c] = 1
 
+        # draw
+        if len(self.legit_move) == 0:
+            return True, None
 
         return False, None
-         
-    def switch_player(self):
-        if self.current_player == 0:
-            self.current_player = 1
-        else:
-            self.current_player = 0
-            
-    def terminal_game(self):
-        while True:
-            self.show_table()
-            try:
-                choose = int(input(f'\n{self.player_dict[self.current_player]} choose one column: '))
-            except ValueError:
-                print('Insert a valid number! ')
-                input("Press ENTER to retry...")
-                continue
-
-            if choose not in self.legit_move:
-                print('Insert a valid column! ')
-                input("Press ENTER to retry...")
-                continue
-            self.insert_pawn(choose)
-            self.move_number +=1
-            end, who = self.check_end()
-            if end:
-                self.show_table()
-                if who == None:
-                    print("It's a Draw!")
-                else:
-                    print(f'\n{self.player_dict[who]} Win!')
-                break
-
-            self.switch_player()
 
 if __name__ == '__main__':
     pass
     a = connect4()
-    a.terminal_game()
+    a.human_vs_human()
 
 
 
