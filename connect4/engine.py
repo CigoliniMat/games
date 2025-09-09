@@ -26,7 +26,7 @@ class connect4:
         else:
             os.system('clear')
     
-    def _switch_player(self):
+    def switch_player(self):
         if self.current_player == 1:
             self.current_player = -1
         else:
@@ -74,7 +74,6 @@ class connect4:
                 self.board[(column,y)] = self.current_player
                 if y == self.row:
                     self.legit_move.remove(column)
-                self._switch_player()
                 self.move_number += 1
                 return
         
@@ -138,8 +137,6 @@ class connect4:
 
 if __name__ == '__main__':
     pass
-    a = connect4()
-    a.human_vs_human()
 
 
 
