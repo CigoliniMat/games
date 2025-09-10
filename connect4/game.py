@@ -2,6 +2,7 @@ import os
 from engine import connect4
 from random import choice
 from time import sleep
+import algorithms as a
 
 def _clean_terminal():
         if os.name == 'nt':
@@ -26,22 +27,18 @@ def human_vs_random():
         game.show_table()
         if game.current_player == -1:
             try:
-                print(f'\nmove number {game.move_number}')
-                choose = int(input(f'{player_dict[game.current_player]} choose one column: '))
+                choose = int(input(f'\n{player_dict[game.current_player]} choose one column: '))
             except ValueError:
                 print('Insert a valid number! ')
                 input("Press ENTER to retry...")
                 _clean_terminal()
                 continue
         else:
-            print(f'\nmove number {game.move_number}')
-            print(f'{player_dict[game.current_player]} are choosing, please wait',end='')
-            for t in range(5):
+            print(f'\n{player_dict[game.current_player]} are choosing, please wait',end='')
+            for t in range(3):
                 sleep(0.5)
                 print('.',end='')
-            pool = game.legit_move
-            choose = choice(pool)
-
+            choose = a.v2(game)
 
         if choose not in game.legit_move:
             print('Insert a valid column! ')
