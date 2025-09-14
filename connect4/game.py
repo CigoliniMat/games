@@ -2,7 +2,18 @@ import os
 from engine import connect4
 from random import choice
 from time import sleep
-import algorithms as a
+from algorithm.greedy import basic_greedy
+from algorithm.random import random, random_plus
+
+pc_dict = {
+    1:{'f':random,'name':'random','difficulty':0},
+    2:{'f':random_plus,'name':'radom plus','difficulty':0.5},
+    3:{'f':basic_greedy,'name':'basic pc','difficulty':1}
+    }
+player_dict = {0:'blank',#' '
+                   -1:'player1',#X
+                   1:'player2'#O
+                   }
 
 def _clean_terminal():
         if os.name == 'nt':
@@ -10,93 +21,133 @@ def _clean_terminal():
         else:
             os.system('clear')
 
-def human_vs_random():
-    player_dict = {0:'blank',#' '
-                   -1:'Human',#X
-                   1:'Random'#O
-                   }
-    
-    game = connect4()
-    _clean_terminal()
-    print(f'Welcome to connect{game.win_number},')
-    print(f'choose a column to fill the button row, the first that connect{game.win_number} pawn Win!')
-    print(f'\nthe {player_dict[game.current_player]} start!\n')
-    
-    end = False
-    while end == False:
-        game.show_table()
-        if game.current_player == -1:
-            try:
-                choose = int(input(f'\n{player_dict[game.current_player]} choose one column: '))
-            except ValueError:
-                print('Insert a valid number! ')
-                input("Press ENTER to retry...")
-                _clean_terminal()
-                continue
+def _choose_mode(player):
+    while True:
+        max_item = 0
+        _clean_terminal()
+        for item in pc_dict:
+            algoritmh = pc_dict[item]
+            print(f'{item} - {algoritmh['name']}, difficulty={algoritmh['difficulty']}')
+            max_item = item
+        options = list(range(1,max_item+1))
+        try:
+            choose = int(input(f'\nchoose a algorithm to challenge (from 1 to {max_item}): '))
+        except ValueError:
+            print('Insert a valid number! ')
+            input("Press ENTER to retry...")
+            continue
+        if choose in options:
+            player_dict[player] = pc_dict[choose]['name']
+            return pc_dict[choose]['f']
         else:
-            print(f'\n{player_dict[game.current_player]} are choosing, please wait',end='')
-            for t in range(3):
-                sleep(0.5)
-                print('.',end='')
-            choose = a.v2(game)
+            print(f'choose a number from 1 to {max_item} ')
+            input("Press ENTER to retry...")
+    
+def Human(game):
+    player = player_dict[game.current_player]
+
+    while True:
+        try:
+            choose = int(input(f'\n{player} choose one column: '))
+        except ValueError:
+            print('Insert a valid number! ')
+            input("Press ENTER to retry...")
+            _clean_terminal()
+            game.show_table()
+            continue
 
         if choose not in game.legit_move:
             print('Insert a valid column! ')
             input("Press ENTER to retry...")
             _clean_terminal()
+            game.show_table()
             continue
+        return choose
+
+def p1_vs_p2(player1=0,player2=0,testing=False):
+    if not testing:
+        _clean_terminal()
+    if player1 == Human:
+        while True:
+            try:
+                name = str(input(f'Player1 choose a name: '))
+                name = name.lstrip()
+                if len(name)>0:
+                    player_dict[-1] = name
+                else:
+                    continue
+                break
+            except ValueError:
+                print('Insert a valid name! ')
+                continue
+    elif player1 == 0:
+        player1 = _choose_mode(-1)
+    if player2 == Human:
+        while True:
+            try:
+                name = str(input(f'Player2 choose a name: '))
+                name = name.lstrip()
+                if len(name)>0:
+                    player_dict[1] = name
+                else:
+                    continue
+                break
+            except ValueError:
+                print('Insert a valid name! ')
+                continue
+    elif player2 == 0:
+        player2 = _choose_mode(1)
+
+    game = connect4()
+    if not testing:
+        _clean_terminal()
+        print(f'Welcome to connect{game.win_number},')
+        print(f'choose a column to fill the button row, the first that connect{game.win_number} pawn Win!')
+        print(f'\nthe {player_dict[game.current_player]} start!\n')
+    
+    end = False
+    while end == False:
+        if game.move_number > 0:
+            if not testing:
+                print(f'{player_dict[game.current_player*-1]} choose column n.{choose}\n')
+        if not testing:
+            game.show_table()
+        if game.current_player == -1:
+            if player1 != Human:
+                if not testing:
+                    print(f'\n{player_dict[game.current_player]} are choosing, please wait',end='')
+                    for t in range(3):
+                        sleep(0.5)
+                        print('.',end='')
+            choose = player1(game)
+        else:
+            if player2 != Human:
+                if not testing:
+                    print(f'\n{player_dict[game.current_player]} are choosing, please wait',end='')
+                    for t in range(3):
+                        sleep(0.5)
+                        print('.',end='')
+            choose = player2(game)
 
         game.insert_pawn(choose)
         end, winner = game.check_end()
         game.switch_player()
         _clean_terminal()
     
-    game.show_table()
     if winner == 0:
-        print(f"\nIt's a draw!")
+        if not testing:
+            game.show_table()
+            print(f"\nIt's a draw!")
     else:
-        print(f'\n{player_dict[winner]} won!\n')
-
-def human_vs_human():
-    player_dict = {0:'blank',#' '
-                   -1:'Cross',#X
-                   1:'Circle'#O
-                   }
+        if not testing:
+            game.show_table()
+            print(f'\n{player_dict[winner]} won!\n')
     
-    game = connect4()
-    _clean_terminal()
-    print(f'Welcome to connect{game.win_number},')
-    print(f'choose a column to fill the button row, the first that connect{game.win_number} pawn Win!')
-    print(f'\nthe {player_dict[game.current_player]} start!\n')
-    
-    end = False
-    while end == False:
-        game.show_table()
-        try:
-            print(f'\nmove number {game.move_number}')
-            choose = int(input(f'{player_dict[game.current_player]} choose one column: '))
-        except ValueError:
-            print('Insert a valid number! ')
-            input("Press ENTER to retry...")
-            _clean_terminal()
-            continue
-
-        if choose not in game.legit_move:
-            print('Insert a valid column! ')
-            input("Press ENTER to retry...")
-            _clean_terminal()
-            continue
-
-        game.insert_pawn(choose)
-        end, winner = game.check_end()
-        _clean_terminal()
-    
-    game.show_table()
-    if winner == 0:
-        print(f"\nIt's a draw!")
-    else:
-        print(f'\n{player_dict[game.current_player]} won!\n')
-
+    return(winner)
 
 if __name__ == '__main__':
-    human_vs_random()    
+    score = {-1:0,0:0,1:0}
+    for i in range(100):
+        result = p1_vs_p2(random,basic_greedy,testing=True)
+        score[result] += 1
+    print(score)

@@ -131,7 +131,7 @@ class connect4:
 
         # draw
         if len(self.legit_move) == 0:
-            return True, None
+            return True, 0
 
         return False, None
 
