@@ -2,13 +2,15 @@ import os
 from engine import connect4
 from random import choice
 from time import sleep
-from algorithm.greedy import basic_greedy
+from algorithm.greedy import greedy
+import algorithm.hard_coded as hd
 from algorithm.random import random, random_plus
 
 pc_dict = {
     1:{'f':random,'name':'random','difficulty':0},
     2:{'f':random_plus,'name':'radom plus','difficulty':0.5},
-    3:{'f':basic_greedy,'name':'basic pc','difficulty':1}
+    3:{'f':greedy,'name':'basic pc','difficulty':1},
+    4:{'f':hd.extra_basic,'name':'extra basic pc', 'difficulty':0.5}
     }
 player_dict = {0:'blank',#' '
                    -1:'player1',#X
@@ -64,7 +66,7 @@ def Human(game):
             continue
         return choose
 
-def p1_vs_p2(player1=0,player2=0,testing=False):
+def p1_vs_p2(player1=0,player2=0,start_player=0,testing=False):
     if not testing:
         _clean_terminal()
     if player1 == Human:
@@ -99,6 +101,8 @@ def p1_vs_p2(player1=0,player2=0,testing=False):
         player2 = _choose_mode(1)
 
     game = connect4()
+    if start_player != 0:
+        game.current_player = start_player
     if not testing:
         _clean_terminal()
         print(f'Welcome to connect{game.win_number},')
@@ -132,7 +136,8 @@ def p1_vs_p2(player1=0,player2=0,testing=False):
         game.insert_pawn(choose)
         end, winner = game.check_end()
         game.switch_player()
-        _clean_terminal()
+        if not testing:
+            _clean_terminal()
     
     if winner == 0:
         if not testing:
@@ -146,8 +151,12 @@ def p1_vs_p2(player1=0,player2=0,testing=False):
     return(winner)
 
 if __name__ == '__main__':
+    #p1_vs_p2(Human)
     score = {-1:0,0:0,1:0}
-    for i in range(100):
-        result = p1_vs_p2(random,basic_greedy,testing=True)
+    players = [0,1]
+    for i in range(1000):
+        start = players[i%2]
+        result = p1_vs_p2(greedy,hd.extra_basic,testing=True)
         score[result] += 1
-    print(score)
+
+    print(score)    
