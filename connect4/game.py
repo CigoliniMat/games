@@ -2,15 +2,14 @@ import os
 from engine import connect4
 from random import choice
 from time import sleep
-from algorithm.greedy import greedy
 import algorithm.hard_coded as hd
-from algorithm.random import random, random_plus
+from algorithm.random import random
 
 pc_dict = {
     1:{'f':random,'name':'random','difficulty':0},
-    2:{'f':random_plus,'name':'radom plus','difficulty':0.5},
-    3:{'f':greedy,'name':'basic pc','difficulty':1},
-    4:{'f':hd.extra_basic,'name':'extra basic pc', 'difficulty':0.5}
+    2:{'f':hd.extra_basic,'name':'easy algorithm','difficulty':'???'},
+    3:{'f':hd.basic,'name':'algorithm', 'difficulty':'???'},
+    4:{'f':hd.medium,'name':'medium algorithm', 'difficulty':'???'},
     }
 player_dict = {0:'blank',#' '
                    -1:'player1',#X
@@ -151,12 +150,15 @@ def p1_vs_p2(player1=0,player2=0,start_player=0,testing=False):
     return(winner)
 
 if __name__ == '__main__':
-    #p1_vs_p2(Human)
-    score = {-1:0,0:0,1:0}
-    players = [0,1]
-    for i in range(1000):
-        start = players[i%2]
-        result = p1_vs_p2(greedy,hd.extra_basic,testing=True)
-        score[result] += 1
+    
+    if False:
+        p1_vs_p2(Human)
+    else:
+        score = {-1:0,0:0,1:0}
+        players = [-1,1]
+        for i in range(1000):
+            start = players[i%2]
+            result = p1_vs_p2(hd.medium,greedy,testing=True, start_player=start)
+            score[result] += 1
 
-    print(score)    
+        print(score)    
