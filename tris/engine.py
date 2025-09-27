@@ -29,10 +29,13 @@ class tris:
                        1:'X',
                        -1:'O'}
         
+        ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        
         for i in range(-1,-(self.grid_len)-1,-1):
             row = self.board[i]
             print(Fore.LIGHTBLACK_EX,end='')
-            print(f'{i+self.grid_len+1} ',end='')
+            value = ALPHABET[i+self.grid_len]
+            print(f'{value} ',end='')
             print(Style.RESET_ALL,end='')
             for j in range(self.grid_len):
                 value = row[j]
@@ -71,8 +74,6 @@ class tris:
 
     def check_win(self):
         direction = [(0,1),(1,0),(1,1),(1,-1)]
-        min_len = 0
-        max_len = self.grid_len-1
 
         for x in range(0,self.grid_len):
             for y in range(0,self.grid_len):
@@ -82,6 +83,7 @@ class tris:
                     for n in range(0, self.number_to_win):
                         x1 = x+(off_x * n)
                         y1 = y+(off_y * n)
+                        print(f'x1={x1} - y1={y1}')
 
                         if not 0 >= x1 > self.grid_len:
                             break
