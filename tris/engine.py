@@ -4,10 +4,8 @@ from colorama import Fore, Style
 
 class tris:
     def __init__(self):
-        p1 = 1
-        p2 = -1
-        empty = 0
         self.grid_len = 3
+        self.number_to_win = 3
         self.board = []
         self.legit_move = []
         self._init_board()
@@ -71,11 +69,49 @@ class tris:
         self.board[row-1][col-1] = self.current_player
         self._switch_player()
 
+    def check_win(self):
+        direction = [(0,1),(1,0),(1,1),(1,-1)]
+        min_len = 0
+        max_len = self.grid_len-1
+
+        for x in range(0,self.grid_len):
+            for y in range(0,self.grid_len):
+                for off_x, off_y in direction:
+                    count = 0
+                    player = 0
+                    for n in range(0, self.number_to_win):
+                        x1 = x+(off_x * n)
+                        y1 = y+(off_y * n)
+
+                        if not 0 >= x1 > self.grid_len:
+                            break
+                        if not 0 >= y1 > self.grid_len:
+                            break
+                        value = self.board[x1][y1]
+                        if value == 0:
+                            break
+                        if player == 0:
+                            player = value
+                            count += 1
+                        elif player == value:
+                            count += 1
+                        else:
+                            break
+
+                        if count >= self.number_to_win:
+                            return True, player
+        return(False,0)
+
 if __name__ == "__main__":
     os.system('cls')
     game = tris()
     game.show_table()
-    game.play((1,1))
+    game.play((3,1))
+    game.play((2,1))
     game.play((2,2))
+    game.play((2,3))
+    game.play((1,3))
     print('\n\n')
     game.show_table()
+    print('\n\n')
+    print(game.check_win())

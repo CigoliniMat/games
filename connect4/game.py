@@ -1,6 +1,5 @@
 import os
 from engine import connect4
-from random import choice
 from time import sleep
 import algorithm.hard_coded as hd
 from algorithm.random import random
