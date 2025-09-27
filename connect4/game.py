@@ -151,14 +151,14 @@ def p1_vs_p2(player1=0,player2=0,start_player=0,testing=False):
 
 if __name__ == '__main__':
     
-    if False:
+    if True:
         p1_vs_p2(Human)
     else:
         score = {-1:0,0:0,1:0}
         players = [-1,1]
         for i in range(1000):
             start = players[i%2]
-            result = p1_vs_p2(hd.medium,greedy,testing=True, start_player=start)
+            result = p1_vs_p2(hd.medium,random,testing=True, start_player=start)
             score[result] += 1
 
         print(score)    
