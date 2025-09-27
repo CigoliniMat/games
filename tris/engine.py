@@ -33,11 +33,18 @@ class tris:
         
         for i in range(-1,-(self.grid_len)-1,-1):
             row = self.board[i]
+            print(Fore.LIGHTBLACK_EX,end='')
             print(f'{i+self.grid_len+1} ',end='')
+            print(Style.RESET_ALL,end='')
             for j in range(self.grid_len):
                 value = row[j]
                 value = player_mark[value]
+                if row[j] == 1:
+                    print(Fore.BLUE,end='')
+                else:
+                    print(Fore.RED,end='')
                 print(f' {value} ', end='')
+                print(Style.RESET_ALL,end='')
                 if j < self.grid_len-1:
                     print('|',end='')
             print()
@@ -52,6 +59,7 @@ class tris:
             else:
                 print('  ',end='')
                 for i in range(self.grid_len):
+                    print(Fore.LIGHTBLACK_EX,end='')
                     print(f' {i+1}  ',end='')
 
     def play(self,move):
