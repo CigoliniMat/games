@@ -1,6 +1,7 @@
 from random import choice
 import os
 from colorama import Fore, Style
+ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 class tris:
     def __init__(self):
@@ -19,7 +20,7 @@ class tris:
         for i in range(self.grid_len):
             for j in range(self.grid_len):
                 self.board[i].append(0)
-                self.legit_move.append((i+1,j+1))
+                self.legit_move.append((i,j))
     
     def _switch_player(self):
         self.current_player = self.current_player*-1
@@ -64,12 +65,20 @@ class tris:
                     print(f' {i+1}  ',end='')
 
     def play(self,move):
-        if not move in self.legit_move:
-            return False
+        if isinstance(move,str):
+            #if the input came from a human
+            #instead of 0 he start from 1 and use char for row ex. A1 for 0,0 
+            row_char = move[0]
+            col = int(move[1])-1
+            row = ALPHABET.find(row_char) 
+            move = (row,col)
         row = move[0]
         col = move[1]
 
-        self.board[row-1][col-1] = self.current_player
+        if not move in self.legit_move:
+            return False
+
+        self.board[row][col] = self.current_player
         self._switch_player()
 
     def check_win(self):
@@ -83,14 +92,14 @@ class tris:
                     for n in range(0, self.number_to_win):
                         x1 = x+(off_x * n)
                         y1 = y+(off_y * n)
-                        print(f'x1={x1} - y1={y1}')
 
-                        if not 0 >= x1 > self.grid_len:
+                        if not self.grid_len > x1 >= 0:
                             break
-                        if not 0 >= y1 > self.grid_len:
+                        if not self.grid_len > y1 >= 0:
                             break
                         value = self.board[x1][y1]
                         if value == 0:
+
                             break
                         if player == 0:
                             player = value
@@ -108,11 +117,11 @@ if __name__ == "__main__":
     os.system('cls')
     game = tris()
     game.show_table()
-    game.play((3,1))
-    game.play((2,1))
-    game.play((2,2))
-    game.play((2,3))
-    game.play((1,3))
+    game.play((0,0))
+    game.play('A2')
+    game.play('C1')
+    game.play('C2')
+    game.play('B1')
     print('\n\n')
     game.show_table()
     print('\n\n')
