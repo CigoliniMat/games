@@ -7,13 +7,12 @@ class tris:
     def __init__(self):
         self.grid_len = 3
         self.number_to_win = 3
+        self.move = 0
         self.board = []
         self.legit_move = []
         self._init_board()
         self.current_player = choice([-1,1])
-        self.char_dict = [0,'A','B','C']
         
-
     def _init_board(self):
         for i in range(self.grid_len):
             self.board.append([])
@@ -67,7 +66,7 @@ class tris:
     def play(self,move):
         if isinstance(move,str):
             #if the input came from a human
-            #instead of 0 he start from 1 and use char for row ex. A1 for 0,0 
+            #instead of 0 he start from 1 and use char for row ex. A1 = 0,0 
             row_char = move[0]
             col = int(move[1])-1
             row = ALPHABET.find(row_char) 
@@ -80,6 +79,8 @@ class tris:
 
         self.board[row][col] = self.current_player
         self._switch_player()
+        self.move += 1
+        return True
 
     def check_win(self):
         direction = [(0,1),(1,0),(1,1),(1,-1)]
@@ -116,7 +117,6 @@ class tris:
 if __name__ == "__main__":
     os.system('cls')
     game = tris()
-    game.show_table()
     game.play((0,0))
     game.play('A2')
     game.play('C1')
