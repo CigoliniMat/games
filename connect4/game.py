@@ -10,6 +10,7 @@ pc_dict = {
     3:{'f':hd.basic,'name':'algorithm', 'difficulty':'???'},
     4:{'f':hd.medium,'name':'medium algorithm', 'difficulty':'???'},
     }
+
 player_dict = {0:'blank',#' '
                    -1:'player1',#X
                    1:'player2'#O
@@ -131,7 +132,7 @@ def p1_vs_p2(player1=0,player2=0,start_player=0,testing=False):
                         print('.',end='')
             choose = player2(game)
 
-        game.insert_pawn(choose)
+        game.play(choose)
         end, winner = game.check_end()
         game.switch_player()
         if not testing:

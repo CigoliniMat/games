@@ -4,10 +4,12 @@ from colorama import Fore, Style
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 class tris:
+    bot = {}
+    
     def __init__(self):
         self.grid_len = 3
         self.number_to_win = 3
-        self.move = 0
+        self.move_number = 0
         self.board = []
         self.legit_move = []
         self._init_board()
@@ -62,13 +64,19 @@ class tris:
                 for i in range(self.grid_len):
                     print(Fore.LIGHTBLACK_EX,end='')
                     print(f' {i+1}  ',end='')
+                    print(Style.RESET_ALL,end='')
 
     def play(self,move):
         if isinstance(move,str):
             #if the input came from a human
-            #instead of 0 he start from 1 and use char for row ex. A1 = 0,0 
+            #instead of 0 he start from 1 and use char for row ex. A1 = 0,0
+            if len(move) != 2:
+                return False
             row_char = move[0]
-            col = int(move[1])-1
+            try:
+                col = int(move[1])-1
+            except:
+                return False
             row = ALPHABET.find(row_char) 
             move = (row,col)
         row = move[0]
@@ -78,11 +86,14 @@ class tris:
             return False
 
         self.board[row][col] = self.current_player
+        self.legit_move.remove(move)
         self._switch_player()
-        self.move += 1
+        self.move_number += 1
         return True
 
-    def check_win(self):
+    def check_end(self):
+        if len(self.legit_move) == 0:
+            return True,0
         direction = [(0,1),(1,0),(1,1),(1,-1)]
 
         for x in range(0,self.grid_len):
@@ -112,7 +123,7 @@ class tris:
 
                         if count >= self.number_to_win:
                             return True, player
-        return(False,0)
+        return False,0
 
 if __name__ == "__main__":
     os.system('cls')
@@ -125,4 +136,4 @@ if __name__ == "__main__":
     print('\n\n')
     game.show_table()
     print('\n\n')
-    print(game.check_win())
+    print(game.check_end())

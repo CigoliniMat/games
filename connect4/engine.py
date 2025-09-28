@@ -3,15 +3,15 @@ import os
 from colorama import Fore, Style
 
 class connect4:
-    row = 6
-    column = 7
-    win_number = 4
-    player_dict = {0:'blank',#' '
+
+    def __init__(self):
+        self.row = 6
+        self.column = 7
+        self.win_number = 4
+        self.player_dict = {0:'blank',#' '
                    -1:'player1',#X
                    1:'player2/pc'#O
                    }
-
-    def __init__(self):
         self.current_player = choice([-1,1])
         self.move_number = 0
         self.board = {}
@@ -26,7 +26,7 @@ class connect4:
         else:
             os.system('clear')
     
-    def switch_player(self):
+    def _switch_player(self):
         if self.current_player == 1:
             self.current_player = -1
         else:
@@ -68,14 +68,22 @@ class connect4:
             print(Style.RESET_ALL,end='')
         print('|')
 
-    def insert_pawn(self,column):
+    def play(self,column):
+        try:
+            column = int(column)
+        except:
+            return False
+        if column > self.column or column < 0:
+            return False
         for y in range(1,self.row+1):
             if self.board[(column,y)] == 0:
                 self.board[(column,y)] = self.current_player
                 if y == self.row:
                     self.legit_move.remove(column)
                 self.move_number += 1
-                return
+                self._switch_player()
+                return True
+        return False
         
     def check_end(self):
         
