@@ -5,13 +5,15 @@ import tris
 from colorama import Fore, Style
 
 games = {1:[tris.engine,'Tris (tic, tac, toe)',{
-            }],
+            1:[tris.random,'Mrs. RNG',0]}
+            ],
         2:[connect4.engine,'Connect4',{
             1:[connect4.random,'Mrs. RNG',0],
             2:[connect4.extra_basic,'Mr. meh','???'],
             3:[connect4.basic,'Mr. Borges','???'],
-            4:[connect4.medium,'Mr. Plus','???']}
-           ]}
+            4:[connect4.medium,'Mrs. Plus','???']}
+           ]
+        }
 
 player_dict = {0:'blank',#' '
                    -1:'player1',#X
